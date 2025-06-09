@@ -10,4 +10,5 @@ public interface UserEventJoinRepository extends JpaRepository<UserEventJoin, Lo
     List<UserEventJoin> findByUserId(Long userId);
     List<UserEventJoin> findByEventId(Long eventId);
     void deleteByEventId(Long eventId);
+    //change
 }
