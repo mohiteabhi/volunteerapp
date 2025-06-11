@@ -52,13 +52,13 @@ public class AuthController {
                     .body("Error: Invalid email or password");
         }
 
-        String token = jwtUtils.generateJwtToken(req.getEmail());
+
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        String token = jwtUtils.generateJwtToken(req.getEmail(), userDetails.getId());
         return ResponseEntity.ok(new JwtResponse(
                 token,
                 userDetails.getFullName(),
-                userDetails.getUsername(),
-                userDetails.getId()  // Use getId() instead of getUserId()
+                userDetails.getUsername()
         ));
     }
 }
