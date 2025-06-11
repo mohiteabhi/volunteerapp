@@ -1,3 +1,4 @@
+AuthController.java
 package com.example.volunteerapp.controller;
 
 import com.example.volunteerapp.dto.*;
@@ -5,7 +6,6 @@ import com.example.volunteerapp.entity.UserInfo;
 import com.example.volunteerapp.repository.UserRepository;
 import com.example.volunteerapp.security.JwtUtils;
 
-import com.example.volunteerapp.service.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -42,9 +42,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest req) {
-        Authentication auth;
         try {
-                    auth = authManager.authenticate(
+            Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
         } catch (BadCredentialsException e) {
             return ResponseEntity
@@ -53,12 +52,7 @@ public class AuthController {
         }
 
         String token = jwtUtils.generateJwtToken(req.getEmail());
-        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        return ResponseEntity.ok(new JwtResponse(
-                token,
-                userDetails.getFullName(),
-                userDetails.getUsername(),
-                userDetails.getId()  // Use getId() instead of getUserId()
-        ));
+        UserInfo user = userRepo.findByEmail(req.getEmail()).get();
+        return ResponseEntity.ok(new JwtResponse(token, user.getFullName(), user.getEmail()));
     }
 }
