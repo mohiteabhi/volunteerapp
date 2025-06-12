@@ -12,6 +12,9 @@ public class VolunteerEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     @Column(name = "city_name", nullable = false)
     private String cityName;
 
@@ -44,7 +47,8 @@ public class VolunteerEvent {
     public VolunteerEvent() {
     }
 
-    public VolunteerEvent(String cityName,
+    public VolunteerEvent(Long userId,
+                          String cityName,
                           String eventDes,
                           Integer totalVol,
                           Integer noOfVolJoined,
@@ -53,6 +57,7 @@ public class VolunteerEvent {
                           String address,
                           String organizerName,
                           String contact) {
+        this.userId    = userId;
         this.cityName = cityName;
         this.eventDes = eventDes;
         this.totalVol = totalVol;
@@ -69,6 +74,9 @@ public class VolunteerEvent {
     public Long getId() {
         return id;
     }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getCityName() {
         return cityName;

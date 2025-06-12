@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class VolunteerEventCreateDTO {
+    @NotNull
+    private Long userId;
 
     @NotBlank(message = "City name must not be blank")
     private String cityName;
@@ -36,6 +38,8 @@ public class VolunteerEventCreateDTO {
     private String contact;
 
     // ————————— Getters and Setters —————————
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getCityName() {
         return cityName;
