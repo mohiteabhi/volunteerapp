@@ -32,6 +32,7 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
     public VolunteerEvent createEvent(VolunteerEventCreateDTO dto) {
         // Map DTO → Entity
         VolunteerEvent event = new VolunteerEvent();
+        event.setUserId(dto.getUserId());
         event.setCityName(dto.getCityName());
         event.setEventDes(dto.getEventDes());
         event.setTotalVol(dto.getTotalVol());
