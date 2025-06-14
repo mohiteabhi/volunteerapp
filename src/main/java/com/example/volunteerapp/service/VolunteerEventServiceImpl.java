@@ -2,8 +2,11 @@ package com.example.volunteerapp.service;
 
 import com.example.volunteerapp.dto.VolunteerEventCreateDTO;
 import com.example.volunteerapp.dto.VolunteerEventUpdateDTO;
+import com.example.volunteerapp.dto.VolunteerEventWithUserDTO;
+import com.example.volunteerapp.entity.UserInfo;
 import com.example.volunteerapp.entity.VolunteerEvent;
 import com.example.volunteerapp.entity.UserEventJoin;
+import com.example.volunteerapp.repository.UserInfoRepository;
 import com.example.volunteerapp.repository.VolunteerEventRepository;
 import com.example.volunteerapp.repository.UserEventJoinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +18,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VolunteerEventServiceImpl implements VolunteerEventService {
 
     private final VolunteerEventRepository repository;
     private final UserEventJoinRepository joinRepo;
+    private final UserInfoRepository userInfoRepository;
 
     @Autowired
-    public VolunteerEventServiceImpl(VolunteerEventRepository repository, UserEventJoinRepository joinRepo) {
+    public VolunteerEventServiceImpl(VolunteerEventRepository repository, UserEventJoinRepository joinRepo, UserInfoRepository userInfoRepository) {
         this.repository = repository;
         this.joinRepo  = joinRepo;
+        this.userInfoRepository = userInfoRepository;
     }
 
     @Override
@@ -77,6 +83,8 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
         throw new EntityNotFoundException("Cannot extract user id from security context");
     }
 
+
+
     @Override
     public Optional<VolunteerEvent> getEventById(Long id) {
         return repository.findById(id);
@@ -119,4 +127,35 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
         }
         repository.deleteById(id);
     }
+
+    @Override
+    public List<VolunteerEventWithUserDTO> getAllEventsWithUserInfo() {
+        return repository.findAll().stream()
+                .map(this::toEventWithUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<VolunteerEventWithUserDTO> getEventByIdWithUserInfo(Long id) {
+        return repository.findById(id)
+                .map(this::toEventWithUserDTO);
+    }
+
+    @Override
+    public List<VolunteerEventWithUserDTO> getEventsByCityNameWithUserInfo(String cityName) {
+        return repository.findByCityName(cityName).stream()
+                .map(this::toEventWithUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    private VolunteerEventWithUserDTO toEventWithUserDTO(VolunteerEvent event) {
+        UserInfo user = userInfoRepository.findById(event.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found with ID: " + event.getUserId()
+                ));
+        return new VolunteerEventWithUserDTO(event, user);
+    }
+
+
+
 }

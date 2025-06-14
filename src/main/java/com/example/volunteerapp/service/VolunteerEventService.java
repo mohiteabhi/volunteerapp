@@ -2,6 +2,7 @@ package com.example.volunteerapp.service;
 
 import com.example.volunteerapp.dto.VolunteerEventCreateDTO;
 import com.example.volunteerapp.dto.VolunteerEventUpdateDTO;
+import com.example.volunteerapp.dto.VolunteerEventWithUserDTO;
 import com.example.volunteerapp.entity.VolunteerEvent;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface VolunteerEventService {
     VolunteerEvent updateEvent(Long id, VolunteerEventUpdateDTO updateDTO);
 
     void deleteEvent(Long id);
+
+    List<VolunteerEventWithUserDTO> getAllEventsWithUserInfo();
+    Optional<VolunteerEventWithUserDTO> getEventByIdWithUserInfo(Long id);
+    List<VolunteerEventWithUserDTO> getEventsByCityNameWithUserInfo(String cityName);
 }

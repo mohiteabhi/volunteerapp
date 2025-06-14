@@ -2,6 +2,7 @@ package com.example.volunteerapp.controller;
 
 import com.example.volunteerapp.dto.VolunteerEventCreateDTO;
 import com.example.volunteerapp.dto.VolunteerEventUpdateDTO;
+import com.example.volunteerapp.dto.VolunteerEventWithUserDTO;
 import com.example.volunteerapp.entity.VolunteerEvent;
 import com.example.volunteerapp.service.VolunteerEventService;
 
@@ -52,33 +53,28 @@ public class VolunteerEventController {
 
     // ————————— Get all events —————————
     @GetMapping
-    @Operation(summary = "Get all volunteer events")
-    public ResponseEntity<List<VolunteerEvent>> getAllEvents() {
-        List<VolunteerEvent> list = service.getAllEvents();
+    @Operation(summary = "Get all volunteer events with user info")
+    public ResponseEntity<List<VolunteerEventWithUserDTO>> getAllEventsWithUserInfo() {
+        List<VolunteerEventWithUserDTO> list = service.getAllEventsWithUserInfo();
         return ResponseEntity.ok(list);
     }
 
     // ————————— Get event by ID —————————
     @GetMapping("/{id}")
-    @Operation(summary = "Get a volunteer event by ID")
-    public ResponseEntity<VolunteerEvent> getEventById(@PathVariable Long id) {
-        return service.getEventById(id)
+    @Operation(summary = "Get a volunteer event by ID with user info")
+    public ResponseEntity<VolunteerEventWithUserDTO> getEventByIdWithUserInfo(@PathVariable Long id) {
+        return service.getEventByIdWithUserInfo(id)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // New endpoint: GET /api/events/city/{cityName}
     // ———————————————————————————————
     @GetMapping("/city/{cityName}")
-    @Operation(summary = "Get all volunteer events by city name")
-    public ResponseEntity<List<VolunteerEvent>> getEventsByCity(
+    @Operation(summary = "Get events by city with user info")
+    public ResponseEntity<List<VolunteerEventWithUserDTO>> getEventsByCityWithUserInfo(
             @PathVariable String cityName) {
-        List<VolunteerEvent> events = service.getEventsByCityName(cityName);
-        if (events.isEmpty()) {
-            // Optionally: return 404 or return empty list with 200.
-            // Here we return 200 and an empty list if no events found for that city.
-            return ResponseEntity.ok(events);
-        }
+        List<VolunteerEventWithUserDTO> events = service.getEventsByCityNameWithUserInfo(cityName);
         return ResponseEntity.ok(events);
     }
 
