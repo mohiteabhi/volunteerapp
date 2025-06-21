@@ -27,4 +27,6 @@ public interface VolunteerEventService {
     List<VolunteerEventWithUserDTO> getAllEventsWithUserInfo();
     Optional<VolunteerEventWithUserDTO> getEventByIdWithUserInfo(Long id);
     List<VolunteerEventWithUserDTO> getEventsByCityNameWithUserInfo(String cityName);
+
+    List<VolunteerEventWithUserDTO> getEventsByUserIdWithUserInfo(Long userId);
 }

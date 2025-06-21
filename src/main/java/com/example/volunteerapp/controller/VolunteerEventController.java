@@ -68,6 +68,14 @@ public class VolunteerEventController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Get all volunteer events created by a given user")
+    public ResponseEntity<List<VolunteerEventWithUserDTO>> getEventsByUser(
+            @PathVariable Long userId) {
+        List<VolunteerEventWithUserDTO> events = service.getEventsByUserIdWithUserInfo(userId);
+        return ResponseEntity.ok(events);
+    }
+
     // New endpoint: GET /api/events/city/{cityName}
     // ———————————————————————————————
     @GetMapping("/city/{cityName}")
