@@ -148,6 +148,13 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
                 .collect(Collectors.toList());
     }
 
+    public List<VolunteerEventWithUserDTO> getEventsByUserIdWithUserInfo(Long userId) {
+        // fetch all events where event.userId == userId
+        return repository.findByUserId(userId).stream()
+                .map(this::toEventWithUserDTO)
+                .collect(Collectors.toList());
+    }
+
     private VolunteerEventWithUserDTO toEventWithUserDTO(VolunteerEvent event) {
         UserInfo user = userInfoRepository.findById(event.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException(

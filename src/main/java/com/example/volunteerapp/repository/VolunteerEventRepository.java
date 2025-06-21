@@ -10,4 +10,6 @@ import java.util.List;
 public interface VolunteerEventRepository extends JpaRepository<VolunteerEvent, Long> {
     // We inherit: save(), findAll(), findById(), deleteById(), etc.
     List<VolunteerEvent> findByCityName(String cityName);
+    List<VolunteerEvent> findByUserId(Long userId);
+
 }
