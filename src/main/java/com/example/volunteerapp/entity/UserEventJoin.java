@@ -5,7 +5,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "user_event_join")
-public class UserEventJoin {
+    public class UserEventJoin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

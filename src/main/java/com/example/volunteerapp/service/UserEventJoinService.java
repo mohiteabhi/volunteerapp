@@ -11,4 +11,5 @@ public interface UserEventJoinService {
     List<UserEventJoinResponse> getJoinsByUserId(Long userId);
     List<UserEventJoinResponse> getJoinsByEventId(Long eventId);
     void deleteJoinsByEventId(Long eventId);
+    void exitEvent(Long joinId);
 }
