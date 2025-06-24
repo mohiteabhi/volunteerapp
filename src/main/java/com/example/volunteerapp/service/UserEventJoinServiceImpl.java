@@ -10,7 +10,9 @@ import com.example.volunteerapp.repository.VolunteerEventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -62,6 +64,29 @@ public class UserEventJoinServiceImpl implements UserEventJoinService{
     @Override
     public void deleteJoinsByEventId(Long eventId) {
         joinRepo.deleteByEventId(eventId);
+    }
+
+    @Override
+    @Transactional
+    public void exitEvent(Long joinId) {
+        UserEventJoin join = joinRepo.findById(joinId)
+                .orElseThrow(() -> new EntityNotFoundException("Join not found: " + joinId));
+
+        VolunteerEvent event = eventRepo.findById(join.getEventId())
+                .orElseThrow(() -> new EntityNotFoundException("Event not found: " + join.getEventId()));
+
+        // check 48h
+        LocalDate eventDate = event.getEventDate();
+        if (LocalDate.now().plusDays(2).isAfter(eventDate)) {
+            throw new IllegalStateException("Cannot exit less than 48 hours before event");
+        }
+
+        // decrement
+        event.setNoOfVolJoined(event.getNoOfVolJoined() - 1);
+        eventRepo.save(event);
+
+        // remove join record
+        joinRepo.delete(join);
     }
 
     private UserEventJoinResponse toResponse(UserEventJoin join) {

@@ -56,4 +56,15 @@ public class UserEventJoinController {
         service.deleteJoinsByEventId(eventId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{joinId}")
+    @Operation(summary = "User exits an event: remove join and decrement count if >48h before event")
+    public ResponseEntity<Void> exitEvent(@PathVariable Long joinId) {
+        try {
+            service.exitEvent(joinId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
 }
