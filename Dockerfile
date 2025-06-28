@@ -2,7 +2,7 @@
 FROM maven:3.8.7-eclipse-temurin-17 AS builder
 WORKDIR /app
 
-# Copy just the wrapper and make it executable
+# Copy just wrapper and make it executable
 COPY mvnw ./
 COPY .mvn .mvn
 RUN chmod +x mvnw
