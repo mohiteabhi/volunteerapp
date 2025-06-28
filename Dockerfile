@@ -13,7 +13,7 @@ RUN chmod +x mvnw
 # 3) Pre‑fetch all dependencies (offline mode)
 RUN ./mvnw dependency:go-offline -B
 
-# 4) Copy the rest of your source and build the JAR
+# 4) Copy the rest of your source and build, JAR
 COPY src src/
 RUN ./mvnw clean package -DskipTests -B
 
