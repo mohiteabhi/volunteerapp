@@ -5,6 +5,7 @@ import com.example.volunteerapp.entity.UserInfo;
 import com.example.volunteerapp.repository.UserRepository;
 import com.example.volunteerapp.security.JwtUtils;
 
+import com.example.volunteerapp.service.PasswordService;
 import com.example.volunteerapp.service.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class AuthController {
     @Autowired private UserRepository userRepo;
     @Autowired private PasswordEncoder passwordEncoder;
     @Autowired private JwtUtils jwtUtils;
+    @Autowired private PasswordService passwordService;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest req) {
@@ -60,5 +62,17 @@ public class AuthController {
                 userDetails.getFullName(),
                 userDetails.getUsername()
         ));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req) {
+        passwordService.createPasswordResetToken(req);
+        return ResponseEntity.ok(new MessageResponse("Password reset email sent"));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest req) {
+        passwordService.resetPassword(req);
+        return ResponseEntity.ok(new MessageResponse("Password reset successful"));
     }
 }
