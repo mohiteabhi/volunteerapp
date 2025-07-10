@@ -48,6 +48,7 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
         event.setAddress(dto.getAddress());
         event.setOrganizerName(dto.getOrganizerName());
         event.setContact(dto.getContact());
+        event.setRequiredSkills(dto.getRequiredSkills());
 
         return repository.save(event);
     }

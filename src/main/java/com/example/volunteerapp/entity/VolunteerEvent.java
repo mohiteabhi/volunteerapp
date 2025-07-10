@@ -3,6 +3,7 @@ package com.example.volunteerapp.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "volunteer_event")
@@ -41,6 +42,14 @@ public class VolunteerEvent {
 
     @Column(name = "contact")
     private String contact;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "event_skills",
+            joinColumns = @JoinColumn(name = "event_id")
+    )
+    @Column(name = "skill")
+    private Set<String> requiredSkills;
 
     // ————————— Constructors —————————
 
@@ -148,6 +157,13 @@ public class VolunteerEvent {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public Set<String> getRequiredSkills() {
+        return requiredSkills;
+    }
+    public void setRequiredSkills(Set<String> requiredSkills) {
+        this.requiredSkills = requiredSkills;
     }
 
     // Optionally override toString(), equals(), hashCode() if needed.
