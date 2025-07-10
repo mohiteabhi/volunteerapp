@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "user_info")
 public class UserInfo {
@@ -30,6 +32,14 @@ public class UserInfo {
 
     @NotBlank
     private String password; // will store the BCrypt hash
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "user_skills",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "skill")
+    private Set<String> skills;
 
     // ——— Getters & Setters ———
 
@@ -83,5 +93,12 @@ public class UserInfo {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<String> getSkills() {
+        return skills;
+    }
+    public void setSkills(Set<String> skills) {
+        this.skills = skills;
     }
 }

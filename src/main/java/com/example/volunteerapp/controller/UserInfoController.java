@@ -30,7 +30,8 @@ public class UserInfoController {
                         user.getAge(),
                         user.getEmail(),
                         user.getAddress(),
-                        user.getContactNo()
+                        user.getContactNo(),
+                        user.getSkills()
                 ))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
@@ -45,7 +46,8 @@ public class UserInfoController {
                 user.getAge(),
                 user.getEmail(),
                 user.getAddress(),
-                user.getContactNo()
+                user.getContactNo(),
+                user.getSkills()
         );
         return ResponseEntity.ok(dto);
     }

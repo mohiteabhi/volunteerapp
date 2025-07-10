@@ -2,6 +2,8 @@ package com.example.volunteerapp.dto;
 
 import jakarta.validation.constraints.*;
 
+import java.util.Set;
+
 public class SignupRequest {
     @NotBlank @Size(min = 2, max = 100)
     private String fullName;
@@ -19,6 +21,10 @@ public class SignupRequest {
 
     @NotBlank @Size(min = 6, max = 100)
     private String password;
+
+
+    @NotEmpty(message = "At least one skill must be provided")
+    private Set<@NotBlank String> skills;
 
     // ——— Getters & Setters ———
 
@@ -68,5 +74,12 @@ public class SignupRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<String> getSkills() {
+        return skills;
+    }
+    public void setSkills(Set<String> skills) {
+        this.skills = skills;
     }
 }

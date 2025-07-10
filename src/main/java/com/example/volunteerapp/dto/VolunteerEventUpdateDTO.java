@@ -1,8 +1,12 @@
 package com.example.volunteerapp.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 public class VolunteerEventUpdateDTO {
 
@@ -34,6 +38,10 @@ public class VolunteerEventUpdateDTO {
 
     @NotBlank(message = "Contact must not be blank")
     private String contact;
+
+    @Getter @Setter
+    @NotEmpty(message = "At least one required skill must be provided")
+    private Set<@NotBlank String> requiredSkills;
 
     // ————————— Getters and Setters —————————
 

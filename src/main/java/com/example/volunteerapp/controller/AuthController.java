@@ -38,6 +38,7 @@ public class AuthController {
         user.setAddress(req.getAddress());
         user.setContactNo(req.getContactNo());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setSkills(req.getSkills());
         userRepo.save(user);
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

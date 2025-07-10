@@ -40,7 +40,8 @@ public class VolunteerEventWithUserDTO {
                 user.getAge(),
                 user.getEmail(),
                 user.getAddress(),
-                user.getContactNo()
+                user.getContactNo(),
+                user.getSkills()
         );
     }
 }
