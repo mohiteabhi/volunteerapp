@@ -4,6 +4,7 @@ import com.example.volunteerapp.entity.VolunteerEvent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -11,5 +12,6 @@ public interface VolunteerEventRepository extends JpaRepository<VolunteerEvent, 
     // We inherit: save(), findAll(), findById(), deleteById(), etc.
     List<VolunteerEvent> findByCityName(String cityName);
     List<VolunteerEvent> findByUserId(Long userId);
+    List<VolunteerEvent> findByEventDateAfter(LocalDate date);
 
 }
