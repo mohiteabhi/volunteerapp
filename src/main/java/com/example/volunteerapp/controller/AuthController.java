@@ -35,6 +35,7 @@ public class AuthController {
         user.setFullName(req.getFullName());
         user.setAge(req.getAge());
         user.setEmail(req.getEmail());
+        user.setCityName(req.getCityName());
         user.setAddress(req.getAddress());
         user.setContactNo(req.getContactNo());
         user.setPassword(passwordEncoder.encode(req.getPassword()));

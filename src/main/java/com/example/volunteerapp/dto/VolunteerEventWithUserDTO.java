@@ -5,6 +5,7 @@ import com.example.volunteerapp.entity.VolunteerEvent;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 @Data
 public class VolunteerEventWithUserDTO {
@@ -19,6 +20,7 @@ public class VolunteerEventWithUserDTO {
     private String address;
     private String organizerName;
     private String contact;
+    private Set<String> requiredSkills;
 
     public VolunteerEventWithUserDTO(VolunteerEvent event, UserInfo user) {
         // Event fields
@@ -32,6 +34,7 @@ public class VolunteerEventWithUserDTO {
         this.address = event.getAddress();
         this.organizerName = event.getOrganizerName();
         this.contact = event.getContact();
+        this.requiredSkills = event.getRequiredSkills();
 
         // User fields
         this.user = new UserDTO(
@@ -40,6 +43,7 @@ public class VolunteerEventWithUserDTO {
                 user.getAge(),
                 user.getEmail(),
                 user.getAddress(),
+                user.getCityName(),
                 user.getContactNo(),
                 user.getSkills()
         );

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -25,6 +27,8 @@ public class UserInfo {
     private String email;
 
     private String address;
+    @Getter @Setter
+    private String cityName;
 
     @NotBlank
     @Size(min = 10, max = 15)
