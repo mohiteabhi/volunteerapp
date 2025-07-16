@@ -28,7 +28,8 @@ public class RecommendationService {
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
         Set<String> userSkills = user.getSkills();
-        String userCity = extractCity(user.getAddress());
+//        String userCity = extractCity(user.getAddress());
+        String userCity = user.getCityName();
 
         // get upcoming events
         List<VolunteerEvent> events = eventRepo.findByEventDateAfter(LocalDate.now());
@@ -38,7 +39,7 @@ public class RecommendationService {
         for (VolunteerEvent e : events) {
             Set<String> required = e.getRequiredSkills();
             long matchCount = required.stream()
-                    .filter(s -> userSkills.contains(s))
+                    .filter(userSkills::contains)
                     .count();
             if (matchCount == 0) continue;
 
@@ -56,10 +57,9 @@ public class RecommendationService {
                 .collect(Collectors.toList());
     }
 
-    private String extractCity(String address) {
-        // simplistic: assume city is first token before comma
-        return address != null && address.contains(",") ? address.split(",")[0].trim() : address;
-    }
+//    private String extractCity(String address) {
+//        return address != null && address.contains(",") ? address.split(",")[0].trim() : address;
+//    }
 
     private SuggestedEventDTO mapToDto(VolunteerEvent e) {
         SuggestedEventDTO dto = new SuggestedEventDTO();

@@ -30,6 +30,7 @@ public class UserInfoController {
                         user.getAge(),
                         user.getEmail(),
                         user.getAddress(),
+                        user.getCityName(),
                         user.getContactNo(),
                         user.getSkills()
                 ))
@@ -46,6 +47,7 @@ public class UserInfoController {
                 user.getAge(),
                 user.getEmail(),
                 user.getAddress(),
+                user.getCityName(),
                 user.getContactNo(),
                 user.getSkills()
         );

@@ -1,6 +1,8 @@
 package com.example.volunteerapp.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 
@@ -13,6 +15,9 @@ public class SignupRequest {
 
     @Email
     private String email;
+
+    @Getter @Setter
+    private String cityName;
 
     private String address;
 
@@ -51,6 +56,8 @@ public class SignupRequest {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 
     public String getAddress() {
         return address;
