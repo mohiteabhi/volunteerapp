@@ -11,6 +11,8 @@ public class SuggestedEventDTO {
     @Getter @Setter
     private Long eventId;
     @Getter @Setter
+    private Long userId;
+    @Getter @Setter
     private String cityName;
     @Getter @Setter
     private String eventDes;

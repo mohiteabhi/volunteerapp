@@ -112,6 +112,7 @@ public class RecommendationService {
     private SuggestedEventDTO toDto(VolunteerEvent e, double score) {
         SuggestedEventDTO dto = new SuggestedEventDTO();
         dto.setEventId(e.getId());
+        dto.setUserId(e.getUserId());
         dto.setCityName(e.getCityName());
         dto.setEventDes(e.getEventDes());
         dto.setTotalVol(e.getTotalVol());
