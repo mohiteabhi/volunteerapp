@@ -41,6 +41,10 @@ public class VolunteerEventCreateDTO {
     @NotBlank(message = "Contact must not be blank")
     private String contact;
 
+    // isActive is optional, defaults to true if not provided
+    @Getter @Setter
+    private Boolean isActive = true;
+
     @Getter @Setter
     @NotEmpty(message = "At least one required skill must be provided")
     private Set<@NotBlank String> requiredSkills;

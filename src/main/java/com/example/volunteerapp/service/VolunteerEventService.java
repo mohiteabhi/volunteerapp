@@ -29,4 +29,14 @@ public interface VolunteerEventService {
     List<VolunteerEventWithUserDTO> getEventsByCityNameWithUserInfo(String cityName);
 
     List<VolunteerEventWithUserDTO> getEventsByUserIdWithUserInfo(Long userId);
+
+    // New methods for isActive functionality
+    List<VolunteerEventWithUserDTO> getActiveEventsWithUserInfo();
+    List<VolunteerEventWithUserDTO> getActiveEventsByCityWithUserInfo(String cityName);
+    List<VolunteerEventWithUserDTO> getActiveEventsByUserWithUserInfo(Long userId);
+
+    void deactivateEvent(Long id);
+    void activateEvent(Long id);
+    void updateExpiredEvents();
+    int bulkDeactivateExpiredEvents();
 }

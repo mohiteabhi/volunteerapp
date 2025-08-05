@@ -40,6 +40,9 @@ public class VolunteerEventUpdateDTO {
     private String contact;
 
     @Getter @Setter
+    private Boolean isActive = true;
+
+    @Getter @Setter
     @NotEmpty(message = "At least one required skill must be provided")
     private Set<@NotBlank String> requiredSkills;
 

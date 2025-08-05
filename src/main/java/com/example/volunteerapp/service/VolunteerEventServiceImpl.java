@@ -16,6 +16,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +53,10 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
         event.setContact(dto.getContact());
         event.setRequiredSkills(dto.getRequiredSkills());
 
+        event.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : true);
+        if (event.getEventDate() != null && event.getEventDate().isBefore(LocalDate.now())) {
+            event.setIsActive(false);
+        }
         return repository.save(event);
     }
 
@@ -57,6 +64,17 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
     public VolunteerEvent incrementVolunteers(Long id) {
         VolunteerEvent event = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + id));
+
+        if (!event.getIsActive()) {
+            throw new IllegalStateException("Cannot join inactive event");
+        }
+
+        // Update active status before checking
+        event.updateActiveStatus();
+        if (!event.getIsActive()) {
+            repository.save(event); // Save the updated status
+            throw new IllegalStateException("Cannot join expired event");
+        }
 
         // If event not full, increment and save
         if (event.getNoOfVolJoined() < event.getTotalVol()) {
@@ -93,12 +111,17 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
 
     @Override
     public List<VolunteerEvent> getAllEvents() {
-        return repository.findAll();
+        List<VolunteerEvent> events = repository.findAll();
+        // Update active status for all events
+        updateEventsActiveStatus(events);
+        return events;
     }
 
     @Override
     public List<VolunteerEvent> getEventsByCityName(String cityName) {
-        return repository.findByCityName(cityName);
+        List<VolunteerEvent> events = repository.findByCityName(cityName);
+        updateEventsActiveStatus(events);
+        return events;
     }
 
     @Override
@@ -133,6 +156,8 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
 
     @Override
     public List<VolunteerEventWithUserDTO> getAllEventsWithUserInfo() {
+        List<VolunteerEvent> events = repository.findAll();
+        updateEventsActiveStatus(events);
         return repository.findAll().stream()
                 .map(this::toEventWithUserDTO)
                 .collect(Collectors.toList());
@@ -146,6 +171,8 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
 
     @Override
     public List<VolunteerEventWithUserDTO> getEventsByCityNameWithUserInfo(String cityName) {
+        List<VolunteerEvent> events = repository.findByCityName(cityName);
+        updateEventsActiveStatus(events);
         return repository.findByCityName(cityName).stream()
                 .map(this::toEventWithUserDTO)
                 .collect(Collectors.toList());
@@ -153,9 +180,97 @@ public class VolunteerEventServiceImpl implements VolunteerEventService {
 
     public List<VolunteerEventWithUserDTO> getEventsByUserIdWithUserInfo(Long userId) {
         // fetch all events where event.userId == userId
+        List<VolunteerEvent> events = repository.findByUserId(userId);
+        updateEventsActiveStatus(events);
         return repository.findByUserId(userId).stream()
                 .map(this::toEventWithUserDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VolunteerEventWithUserDTO> getActiveEventsWithUserInfo() {
+        // First, update expired events
+        updateExpiredEvents();
+        List<VolunteerEvent> events = repository.findByIsActiveTrue();
+        return events.stream()
+                .map(this::toEventWithUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VolunteerEventWithUserDTO> getActiveEventsByCityWithUserInfo(String cityName) {
+        updateExpiredEvents();
+        List<VolunteerEvent> events = repository.findByCityNameAndIsActiveTrue(cityName);
+        return events.stream()
+                .map(this::toEventWithUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VolunteerEventWithUserDTO> getActiveEventsByUserWithUserInfo(Long userId) {
+        updateExpiredEvents();
+        List<VolunteerEvent> events = repository.findByUserIdAndIsActiveTrue(userId);
+        return events.stream()
+                .map(this::toEventWithUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deactivateEvent(Long id) {
+        VolunteerEvent event = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + id));
+        event.setIsActive(false);
+        repository.save(event);
+    }
+
+
+    @Override
+    @Transactional
+    public void activateEvent(Long id) {
+        VolunteerEvent event = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found with id " + id));
+
+        // Don't activate if event is expired
+        if (!event.isExpired()) {
+            event.setIsActive(true);
+            repository.save(event);
+        } else {
+            throw new IllegalStateException("Cannot activate expired event");
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void updateExpiredEvents() {
+        List<VolunteerEvent> expiredEvents = repository.findExpiredActiveEvents(LocalDate.now());
+        for (VolunteerEvent event : expiredEvents) {
+            event.setIsActive(false);
+        }
+        repository.saveAll(expiredEvents);
+    }
+
+
+    @Override
+    @Transactional
+    public int bulkDeactivateExpiredEvents() {
+        return repository.deactivateExpiredEvents(LocalDate.now());
+    }
+
+
+    private void updateEventsActiveStatus(List<VolunteerEvent> events) {
+        boolean needsSave = false;
+        for (VolunteerEvent event : events) {
+            boolean wasActive = event.getIsActive();
+            event.updateActiveStatus();
+            if (wasActive != event.getIsActive()) {
+                needsSave = true;
+            }
+        }
+        if (needsSave) {
+            repository.saveAll(events);
+        }
     }
 
     private VolunteerEventWithUserDTO toEventWithUserDTO(VolunteerEvent event) {
