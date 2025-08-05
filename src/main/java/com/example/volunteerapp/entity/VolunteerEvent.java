@@ -43,6 +43,9 @@ public class VolunteerEvent {
     @Column(name = "contact")
     private String contact;
 
+    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean isActive = true;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "event_skills",
@@ -54,6 +57,7 @@ public class VolunteerEvent {
     // ————————— Constructors —————————
 
     public VolunteerEvent() {
+        this.isActive = true;
     }
 
     public VolunteerEvent(Long userId,
@@ -159,11 +163,31 @@ public class VolunteerEvent {
         this.contact = contact;
     }
 
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
     public Set<String> getRequiredSkills() {
         return requiredSkills;
     }
     public void setRequiredSkills(Set<String> requiredSkills) {
         this.requiredSkills = requiredSkills;
+    }
+
+    // Utility method to check if event is expired
+    public boolean isExpired() {
+        return this.eventDate != null && this.eventDate.isBefore(LocalDate.now());
+    }
+
+    // Method to update active status based on current date
+    public void updateActiveStatus() {
+        if (isExpired()) {
+            this.isActive = false;
+        }
     }
 
     // Optionally override toString(), equals(), hashCode() if needed.

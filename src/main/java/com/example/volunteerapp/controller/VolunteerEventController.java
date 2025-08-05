@@ -51,6 +51,14 @@ public class VolunteerEventController {
         }
     }
 
+    // ————————— Get only active events —————————
+    @GetMapping("/active")
+    @Operation(summary = "Get all active volunteer events with user info")
+    public ResponseEntity<List<VolunteerEventWithUserDTO>> getActiveEventsWithUserInfo() {
+        List<VolunteerEventWithUserDTO> list = service.getActiveEventsWithUserInfo();
+        return ResponseEntity.ok(list);
+    }
+
     // ————————— Get all events —————————
     @GetMapping
     @Operation(summary = "Get all volunteer events with user info")
@@ -76,6 +84,14 @@ public class VolunteerEventController {
         return ResponseEntity.ok(events);
     }
 
+    @GetMapping("/user/{userId}/active")
+    @Operation(summary = "Get all active volunteer events created by a given user")
+    public ResponseEntity<List<VolunteerEventWithUserDTO>> getActiveEventsByUser(
+            @PathVariable Long userId) {
+        List<VolunteerEventWithUserDTO> events = service.getActiveEventsByUserWithUserInfo(userId);
+        return ResponseEntity.ok(events);
+    }
+
     // New endpoint: GET /api/events/city/{cityName}
     // ———————————————————————————————
     @GetMapping("/city/{cityName}")
@@ -83,6 +99,14 @@ public class VolunteerEventController {
     public ResponseEntity<List<VolunteerEventWithUserDTO>> getEventsByCityWithUserInfo(
             @PathVariable String cityName) {
         List<VolunteerEventWithUserDTO> events = service.getEventsByCityNameWithUserInfo(cityName);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/city/{cityName}/active")
+    @Operation(summary = "Get active events by city with user info")
+    public ResponseEntity<List<VolunteerEventWithUserDTO>> getActiveEventsByCityWithUserInfo(
+            @PathVariable String cityName) {
+        List<VolunteerEventWithUserDTO> events = service.getActiveEventsByCityWithUserInfo(cityName);
         return ResponseEntity.ok(events);
     }
 
@@ -98,6 +122,45 @@ public class VolunteerEventController {
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    @PutMapping("/{id}/deactivate")
+    @Operation(summary = "Deactivate an event")
+    public ResponseEntity<Void> deactivateEvent(@PathVariable Long id) {
+        try {
+            service.deactivateEvent(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{id}/activate")
+    @Operation(summary = "Activate an event (if not expired)")
+    public ResponseEntity<Void> activateEvent(@PathVariable Long id) {
+        try {
+            service.activateEvent(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    // ————————— Utility endpoints —————————
+    @PutMapping("/update-expired")
+    @Operation(summary = "Update expired events status")
+    public ResponseEntity<String> updateExpiredEvents() {
+        service.updateExpiredEvents();
+        return ResponseEntity.ok("Expired events updated successfully");
+    }
+
+    @PutMapping("/bulk-deactivate-expired")
+    @Operation(summary = "Bulk deactivate all expired events")
+    public ResponseEntity<String> bulkDeactivateExpiredEvents() {
+        int count = service.bulkDeactivateExpiredEvents();
+        return ResponseEntity.ok("Deactivated " + count + " expired events");
     }
 
     // ————————— Delete event by ID —————————

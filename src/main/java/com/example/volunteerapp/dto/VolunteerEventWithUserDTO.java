@@ -20,6 +20,7 @@ public class VolunteerEventWithUserDTO {
     private String address;
     private String organizerName;
     private String contact;
+    private Boolean isActive;
     private Set<String> requiredSkills;
 
     public VolunteerEventWithUserDTO(VolunteerEvent event, UserInfo user) {
@@ -34,6 +35,7 @@ public class VolunteerEventWithUserDTO {
         this.address = event.getAddress();
         this.organizerName = event.getOrganizerName();
         this.contact = event.getContact();
+        this.isActive = event.getIsActive();
         this.requiredSkills = event.getRequiredSkills();
 
         // User fields
