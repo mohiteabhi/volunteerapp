@@ -37,12 +37,20 @@ public class UserInfo {
     @NotBlank
     private String password; // will store the BCrypt hash
 
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(
+//            name = "user_skills",
+//            joinColumns = @JoinColumn(name = "user_id")
+//    )
+//    @Column(name = "skill")
+//    private Set<String> skills;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_skills",
-            joinColumns = @JoinColumn(name = "user_id")
+            joinColumns = @JoinColumn(name = "user_id"),
+            foreignKey = @ForeignKey(name = "FK_user_skills_user_id")
     )
-    @Column(name = "skill")
+    @Column(name = "skill", length = 255, nullable = false)
     private Set<String> skills;
 
     // ——— Getters & Setters ———
