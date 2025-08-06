@@ -46,13 +46,22 @@ public class VolunteerEvent {
     @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive = true;
 
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @CollectionTable(
+//            name = "event_skills",
+//            joinColumns = @JoinColumn(name = "event_id")
+//    )
+//    @Column(name = "skill")
+//    private Set<String> requiredSkills;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "event_skills",
-            joinColumns = @JoinColumn(name = "event_id")
+            joinColumns = @JoinColumn(name = "event_id"),
+            foreignKey = @ForeignKey(name = "FK_event_skills_event_id")
     )
-    @Column(name = "skill")
+    @Column(name = "skill", length = 255, nullable = false)
     private Set<String> requiredSkills;
+
 
     // ————————— Constructors —————————
 
