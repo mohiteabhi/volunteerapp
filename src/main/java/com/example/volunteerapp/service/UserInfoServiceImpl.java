@@ -37,6 +37,8 @@ public class UserInfoServiceImpl implements UserInfoService {
         existing.setEmail(userInfo.getEmail());
         existing.setAddress(userInfo.getAddress());
         existing.setContactNo(userInfo.getContactNo());
+        existing.setCityName(userInfo.getCityName());
+        existing.setSkills(userInfo.getSkills());
         return userInfoRepository.save(existing);
     }
 
